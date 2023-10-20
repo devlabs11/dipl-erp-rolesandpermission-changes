@@ -1,0 +1,154 @@
+@extends('layout.app')
+@section('content')
+<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <!--begin::Toolbar-->
+    <div class="toolbar" id="kt_toolbar">
+        <!--begin::Container-->
+        <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+            <!--begin::Page title-->
+            <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                <!--begin::Title-->
+                <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Permission</h1>
+                <!--end::Title-->
+            </div>
+            <div class="d-flex align-items-center gap-2 gap-lg-3">
+                <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                    <a href="{{route('permission-create') }}" class="btn btn-sm btn-primary">Add Permission</a>
+                </div>
+                <a style="display:none" href="../../demo1/dist/.html" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_create_app">Create</a>
+                <!--end::Primary button-->
+            </div>
+            <!--end::Actions-->
+        </div>
+        <!--end::Container-->
+    </div>
+
+    <!--begin::Post-->
+    <div class="post d-flex flex-column-fluid" id="kt_post">
+        <!--begin::Container-->
+        <div id="kt_content_container" class="container-xxl">
+            <!--begin::Card-->
+            <div class="card">
+                <!--begin::Card header-->
+                <div class="card-header border-0 pt-6">
+                    <!--begin::Card title-->
+                    <div class="card-title">
+                        <!--begin::Search-->
+                        <div class="d-flex align-items-center position-relative my-1">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                            &nbsp;
+                            <!--end::Svg Icon-->
+
+                        </div>
+                        <!--end::Search-->
+                    </div>
+                    <!--begin::Card title-->
+                </div>
+                <!--end::Card header-->
+                <!--begin::Card body-->
+                <div class="card-body pt-0">
+                    <!--begin::Table-->
+                    <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_table">
+                        <!--begin::Table head-->
+                        <thead>
+                            <!--begin::Table row-->
+                            <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                                <th >Sr.No</th>
+                                <th>name</th>
+                                <th>Permission</th>
+                                <th >Actions</th>
+                            </tr>
+                            <!--end::Table row-->
+                        </thead>
+                        <!--end::Table head-->
+                        <!--begin::Table body-->
+                        <tbody class="fw-bold text-gray-600">
+                            @foreach ($permission_menu as $menu)
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{ $menu->name ?? '' }}</td>
+                                    <td>{{ $menu->slug ?? '' }}</td>
+                                    <td>
+                                        {{-- <a href="{{route('menu-show',['id' => $menu->id])}}" title="Preview" class="menu-link flex-stack px-3" style="font-weight:normal !important;" target="_blank"><i class="fa fa-eye" aria-hidden="true" style="color:#009ef7"></i></a> --}}
+                                        <a href="{{route('permission-edit',['id' => $menu->id])}}" title="Edit" class="menu-link flex-stack px-3" style="font-weight:normal !important;"><i class="fa fa-edit" style="font-weight:normal !important;"></i></a>
+                                        <a data-id="{{$menu->id}}" title="Delete" style="cursor: pointer;font-weight:normal !important;" class="menu-link flex-stack px-3 delete"><i class="fa fa-trash" style="color:red;"> </i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <!--end::Table body-->
+                    </table>
+                    <!--end::Table-->
+                </div>
+                <!--end::Card body-->
+            </div>
+            <!--end::Card-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::Post-->
+</div>
+
+@endsection
+@push('js')
+<script>
+    $( document ).ready(function() {
+        console.log("Permisssion-Menu-index File!" );
+
+        //Delete
+        $('.delete').click(function(e){
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            console.log('Delete: '+id);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{route('permission-destroy')}}",
+                    type: "GET",
+                    data: {'id':id},
+                    success: function( response ) {
+                        console.log(response);
+                        if(response == 1){
+                            Swal.fire(
+                                'Deleted!',
+                                'Your Record has been deleted.',
+                                'success'
+                            ).then(function() {
+                                    window.location = "{{route('permission')}}";
+                                }
+                            )
+                        }else{
+                            swal.fire({
+                                title: "Error",
+                                text: "Please Check the record",
+                                type: "error"
+                            });
+                        }
+
+                    }
+                })
+            }
+            })
+        });
+
+        //DataTable
+        var table=$('#kt_customers_table').DataTable({
+            "emptyTable": "No data available in table",
+            "pageLength": 25,
+            "searching": true,
+            // "dom": "Bfrtip",
+            "dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+            // "dom": '<"top"i>rt<"bottom"flp><"clear">',
+        });
+
+    });
+</script>
+@endpush

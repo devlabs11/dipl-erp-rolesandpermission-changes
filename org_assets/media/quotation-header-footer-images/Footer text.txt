@@ -1,0 +1,3 @@
+string footer = "CIN No. : U30007MH2004ptc146993 \nAn ISO 9001:2008 Certified Company \nIBACRBD Approved Security Printer \n"
+                     + "Regd.& Admin. Off : 16, Samrat Mill Compound, L.B.S.Marg, Vikhroli(W), Mumbai-400079 Tel : +91-22-25774911, 25784858, 67974911, 66022000 * Fax: 66022020/10 \n"
+                    + "Factory Add : Building. No.D-5, Unit No. 22, 122, Bhumi Industrial Park, Bhumi World, At: Pimplas Village, Mumbai-Nashik Bypass Road (NH-3), Bhiwandi, Dist. Thane-421302 Tel : 9272221444, Email: devharsh2010@gmail.com * Url : www.devharshinfotech.com ";
