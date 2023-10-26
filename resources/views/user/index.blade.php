@@ -8,8 +8,8 @@
 	<head>
 	@include('layout.inc_header')
  
-	
-	@can('users-list')
+	@can('show-user')
+
 	
 
 	</head>
@@ -173,12 +173,12 @@
 									<!--end::Menu-->
 
 
-									@can('users-create')
+								
 									<!-- @if($create) -->
 										<a href="{{ URL::to('useraddedit/0') }}" class="btn btn-sm btn-primary">Add User</a>
 									<!-- @else -->
 
-									@endcan
+								
 										{{-- <button class="btn  btn-sm btn-primary " type="button"  aria-expanded="false">
 											Locked&nbsp;&nbsp;<i class="fa fa-lock" style="display:inline"></i>
 										</button> --}}
@@ -272,6 +272,8 @@
 												<!--end::Table head-->
 												<!--begin::Table body-->
 												<tbody class="fw-bold text-gray-600">
+
+												@foreach()
 
 												</tbody>
 												<!--end::Table body-->
@@ -432,10 +434,10 @@
 			<!--end::Svg Icon-->
 		</div>
 		<!--end::Scrolltop-->
+		@endcan
 
 		@include('layout.inc_footer')
 		<script src="{{ URL::asset('assets/js/custom/apps/customers/list/list.js') }} "></script>
-@endcan
 		<script>
 
 		var frmModalForm = $('#create_master');

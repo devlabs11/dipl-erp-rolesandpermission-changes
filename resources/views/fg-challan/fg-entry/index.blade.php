@@ -1,16 +1,6 @@
 @extends('layout.app')
 @section('content')
-@php
-    // $result = \Helper::getPermission();
-    $create = \Helper::getPermission('fg-create') ? 1 : 0;
-    $edit = \Helper::getPermission('fg-edit') ? 1 : 0;
-    $delete = \Helper::getPermission('fg-delete') ? 1 : 0;
-    // $duplicate = \Helper::getPermission('fg-duplicate') ? 1 : 0;
-    // $alter = \Helper::getPermission('fg-alter') ? 1 : 0;
-    $view = \Helper::getPermission('fg-view') ? 1 : 0;
-    // $pdf = \Helper::getPermission('fg-pdf') ? 1 : 0;
-    // $export = \Helper::getPermission('fg-export') ? 1 : 0;
-@endphp
+@can('fg-show')
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <!--begin::Toolbar-->
     <div class="toolbar" id="kt_toolbar">
@@ -195,9 +185,9 @@
                                 <th>Location</th>
                                 <th>Entry Date</th>
                                 <th>F.Goods Qty</th>
-                                @if ($edit != 0 || $delete != 0 || $view != 0 )
+                          
                                     <th >Actions</th>
-                                @endif
+                             
                             </tr>
                             <!--end::Table row-->
                         </thead>
@@ -218,15 +208,13 @@
                                     <td>{{date('d-m-Y',strtotime($item->date)) ?? 'N/A'}}</td>
                                     <td>{{$item->fg_qty ?? 'N/A'}}</td>
                                     <td>
-                                        @if ($view == 1)
+                                       
                                             <a href="{{route('fg-entry-show',['id' => $item->id])}}" title="Preview" class="menu-link flex-stack px-3" style="font-weight:normal !important;" target="_blank"><i class="fa fa-eye" aria-hidden="true" style="color:#009ef7"></i></a>
-                                        @endif
-                                        @if ($edit == 1)
+                                     
                                             <a href="{{route('fg-entry-edit',['id' => $item->id])}}" title="Edit" class="menu-link flex-stack px-3" style="font-weight:normal !important;"><i class="fa fa-edit" style="font-weight:normal !important;"></i></a>
-                                        @endif
-                                        @if ($delete == 1)
+                                        
                                             <a data-id="{{$item->id}}" title="Delete" style="cursor: pointer;font-weight:normal !important;" class="menu-link flex-stack px-3 delete"><i class="fa fa-trash" style="color:red;"> </i></a>
-                                        @endif
+                                      
                                     </td>
                                 </tr>
                             @endforeach
@@ -243,7 +231,7 @@
     </div>
     <!--end::Post-->
 </div>
-
+@endcan
 @endsection
 @push('js')
 <script>

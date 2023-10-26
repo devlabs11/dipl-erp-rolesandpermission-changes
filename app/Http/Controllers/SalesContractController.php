@@ -21,14 +21,10 @@ class SalesContractController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(){
-        $list = \Helper::getPermission('pi-list') ? 1 : 0;
-        if($list == 1){
+       
             $salesContracts = SalesContract::select('id','quotation_id','sales_person_id','date','company_id')->orderBy('id','desc')->get();
             return view('sales-contract.index',['salesContracts' => $salesContracts]);
-        }else{
-            return redirect('/dashboard');
-        }
-
+    
     }
 
     /**
@@ -89,7 +85,7 @@ class SalesContractController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-    //    dd($request);
+    
     DB::beginTransaction();
     try {
        $year = \Helper::currentFincYear();

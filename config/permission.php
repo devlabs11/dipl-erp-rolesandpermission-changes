@@ -36,7 +36,7 @@ return [
          * default value but you may easily change it to any table you like.
          */
 
-        'roles' => 'access_roles',
+        'roles' => 'roles',
 
         /*
          * When using the "HasPermissions" trait from this package, we need to know which
@@ -44,7 +44,7 @@ return [
          * default value but you may easily change it to any table you like.
          */
 
-        'permissions' => 'permission_menu_mappings',
+        'permissions' => 'permissions',
 
         /*
          * When using the "HasPermissions" trait from this package, we need to know which
@@ -68,15 +68,15 @@ return [
          * basic default value but you may easily change it to any table you like.
          */
 
-        'role_has_permissions' => 'permission_role_mappings',
+        'role_has_permissions' => 'role_has_permissions',
     ],
 
     'column_names' => [
         /*
          * Change this if you want to name the related pivots other than defaults
          */
-        // 'role_pivot_key' => null, //default 'role_id',
-        // 'permission_pivot_key' => null, //default 'permission_id',
+        'role_pivot_key' => null, //default 'role_id',
+        'permission_pivot_key' => null, //default 'permission_id',
 
         /*
          * Change this if you want to name the related model primary key other than
@@ -86,14 +86,14 @@ return [
          * that case, name this `model_uuid`.
          */
 
-        // 'model_morph_key' => 'model_id',
+        'model_morph_key' => 'model_id',
 
         /*
          * Change this if you want to use the teams feature and your related model's
          * foreign key is other than `team_id`.
          */
 
-        // 'team_foreign_key' => 'team_id',
+        'team_foreign_key' => 'team_id',
     ],
 
     /*

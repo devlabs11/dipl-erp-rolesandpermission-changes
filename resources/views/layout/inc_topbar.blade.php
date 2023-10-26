@@ -1,9 +1,4 @@
 <!--begin::Notifications-->
-@php
-$avatar = Helper::getAvatar();
-// echo $avatar;
-// exit;
-@endphp
 <div class="d-flex align-items-center ms-1 ms-lg-3">
     <!--begin::Menu- wrapper-->
     <div class="btn btn-icon btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px w-md-40px h-md-40px"
@@ -614,8 +609,7 @@ $avatar = Helper::getAvatar();
     <!--begin::Menu wrapper-->
     <div class="cursor-pointer symbol symbol-30px symbol-md-40px" data-kt-menu-trigger="click"
         data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-        <img @if ($avatar !=null) src="{{ URL::asset('avatar/' . $avatar) }}" @else
-            src="{{ URL::asset('assets/media/avatars/300-1.jpg') }}" @endif alt="user" />
+        <img src="{{ URL::asset('assets/media/avatars/300-1.jpg') }}" alt="user" />
     </div>
     <!--begin::User account menu-->
     <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px"
@@ -625,11 +619,7 @@ $avatar = Helper::getAvatar();
             <div class="menu-content d-flex align-items-center px-3">
                 <!--begin::Avatar-->
                 <div class="symbol symbol-50px me-5">
-                    @if ($avatar != null)
-                    <img src="{{ URL::asset('avatar/' . $avatar) }}" alt="Profile Picture">
-                    @else
                     <img alt="Logo" src="{{ URL::asset('assets/media/avatars/300-1.jpg') }}" />
-                    @endif
                 </div>
                 <!--end::Avatar-->
                 <!--begin::Username-->
@@ -637,7 +627,7 @@ $avatar = Helper::getAvatar();
                     <div class="fw-bolder d-flex align-items-center fs-5">
                         <?php
 
-
+															
 															 $fullname="";
 															 if (Session::has('userdata'))
 															 {
@@ -668,7 +658,7 @@ $avatar = Helper::getAvatar();
         <!--end::Menu separator-->
         <!--begin::Menu item-->
         <div class="menu-item px-5">
-            <a href="{{ route('profile') }}" class="menu-link px-5">My Profile</a>
+            <a href="../../demo1/dist/account/overview.html" class="menu-link px-5">My Profile</a>
         </div>
         <!--end::Menu item-->
 
@@ -676,19 +666,13 @@ $avatar = Helper::getAvatar();
         <div class="menu-item px-5 my-1">
             <a href="../../demo1/dist/account/settings.html" class="menu-link px-5">Account Settings</a>
         </div>
-
-
-
-        <!-- logout functionality -->
-
-
-
-
+        <!--end::Menu item-->
+        <!--begin::Menu item-->
 
         <div class="menu-item px-5 my-2">
 
             <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-			 document.getElementById('logout-form').submit();">
+ document.getElementById('logout-form').submit();">
                 {{ __('Logout') }}
             </a>
 
@@ -697,9 +681,6 @@ $avatar = Helper::getAvatar();
             </form>
 
         </div>
-
-        
-
 
 
 

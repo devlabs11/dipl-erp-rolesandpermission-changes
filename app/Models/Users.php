@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 
 class Users extends Model
-// class Users extends Authenticatable
+
 {
     use HasFactory;
     // use Notifiable;

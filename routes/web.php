@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RolesAndPermissionController;
+use App\Http\Controllers\UsersController;
 use App\Http\Middleware\Authenticate;
+use App\Models\PermissionModel;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +17,137 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+
+Auth::routes();
+Route::get('/', function () {
+    return view('auth.login');
+});
+
+
+
+// role
+
+Route::get('/p', function () {
+    $permission_data = PermissionModel::all();
+    return view('admin.RolesAndPermission.partialFiles.partial', ['permission_data' => $permission_data]);
+});
+
+
+
+Route::get('/addRoles', function () {
+    return view('admin.roles.addRoles');
+});
+
+
+
+
+Route::post('/storeRole', [App\Http\Controllers\RolesController::class, 'storeRole'])->middleware('can:role-add');
+
+Route::get('showRoles', [App\Http\Controllers\RolesController::class, 'showRole'])->middleware('can:role-show');
+
+Route::get('/delete-role/{id}', [App\Http\Controllers\RolesController::class, 'destroyRole'])->middleware('can:role-delete');
+
+Route::get('/edit-role/{id}', [App\Http\Controllers\RolesController::class, 'editRole']);
+
+Route::post('/update-role/{id}', [App\Http\Controllers\RolesController::class, 'updateRole'])->middleware('can:role-update');
+
+
+Route::get('/addPermission', function () {
+    return view('admin.permission.addPermission');
+});
+
+
+Route::post('/storePermission', [App\Http\Controllers\PermissionController::class, 'storePermission'])->middleware('can:permission-add');
+
+Route::get('/showPermission', [App\Http\Controllers\PermissionController::class, 'showPermission'])->middleware('can:permission-show');
+
+Route::get('/edit-permission/{id}', [App\Http\Controllers\PermissionController::class, 'editPermission']);
+
+Route::post('/update-permission/{id}', [App\Http\Controllers\PermissionController::class, 'updatePermission'])->middleware('can:permission-update');
+
+Route::get('/delete-permission/{id}', [App\Http\Controllers\PermissionController::class, 'destroyPermission'])->middleware('can:permission-delete');
+
+
+
+
+Route::get('/showroles_and_permission', [RolesAndPermissionController::class, 'showRP'])->name('showroles_and_permission');
+Route::post('/showroles_and_permission', [RolesAndPermissionController::class, 'storeRolesAndPermission'])->name('showroles_and_permissions');
+Route::get('/fetchPermission', [PermissionController::class, 'fetchPermission'])->name('fetchPermission');
+
+
+
+
+// user
+
+
+Route::get('/addUsers' , function(){
+    return view('admin.user.addUsers');
+});
+
+Route::get('/addUsers', [UsersController::class, 'showRole']);
+Route::get('/addUser', [UsersController::class, 'showRole'])->middleware('can:add-user');
+
+Route::post('/showUsers', [App\Http\Controllers\UsersController::class, 'storeUser'])->name('store')->middleware('can:add-user');
+
+Route::get('/showUsers', [App\Http\Controllers\UsersController::class, 'showUser'])->middleware('can:show-user');
+
+Route::get('/edit/{id}', [App\Http\Controllers\UsersController::class, 'editUser']);
+
+Route::post('/update/{id}', [App\Http\Controllers\UsersController::class, 'updateUser'])->middleware('can:update-user');
+
+Route::post('/delete/{id}', [UsersController::class, 'destroyUser'])->middleware('can:delete-user');
+
+
+
+
+//Sales-Contract
+Route::get('sales-contract','App\Http\Controllers\SalesContractController@index')->name('sales-contract')->middleware('can:salesContract-show');
+Route::get('sales-contract-create','App\Http\Controllers\SalesContractController@create')->name('sales-contract-create')->middleware('can:salesContract-add');
+Route::post('sales-contract-store','App\Http\Controllers\SalesContractController@store')->name('sales-contract-store')->middleware('can:salesContract-add');
+Route::get('sales-contract-edit','App\Http\Controllers\SalesContractController@edit')->name('sales-contract-edit');
+Route::post('sales-contract-update','App\Http\Controllers\SalesContractController@update')->name('sales-contract-update')->middleware('can:salesContract-update');
+Route::get('sales-contract-destroy','App\Http\Controllers\SalesContractController@destroy')->name('sales-contract-destroy')->middleware('can:salesContract-delete');
+Route::get('sales-contract-show','App\Http\Controllers\SalesContractController@show')->name('sales-contract-show');
+Route::get('get-product-hsn','App\Http\Controllers\SalesContractController@productHSN')->name('get-product-hsn');
+Route::get('get-quotation-detail-SC','App\Http\Controllers\SalesContractController@quotationDetail')->name('get-quotation-detail-SC');
+Route::get('sales-contract-export','App\Http\Controllers\SalesContractController@export')->name('sales-contract-export');
+
+Route::get('job-card-duplicate/{id}','App\Http\Controllers\jobcard@duplicate')->name('job-card-duplicate');
+
+
+
+
+//FG Entry
+
+
+Route::get('fg-entry','App\Http\Controllers\FgEntryController@index')->name('fg-entry')->middleware('can:fg-show');
+Route::get('fg-entry-create','App\Http\Controllers\FgEntryController@create')->name('fg-entry-create')->middleware('can:fg-add');
+Route::post('fg-entry-store','App\Http\Controllers\FgEntryController@store')->name('fg-entry-store')->middleware('can:fg-add');
+Route::get('fg-entry-edit','App\Http\Controllers\FgEntryController@edit')->name('fg-entry-edit');
+Route::post('fg-entry-update','App\Http\Controllers\FgEntryController@update')->name('fg-entry-update')->middleware('can:fg-update');
+Route::get('fg-entry-destroy','App\Http\Controllers\FgEntryController@destroy')->name('fg-entry-destroy')->middleware('can:fg-delete');
+Route::get('fg-entry-show','App\Http\Controllers\FgEntryController@show')->name('fg-entry-show')->middleware('can:fgEntry-show');
+Route::get('fg-entry-search','App\Http\Controllers\FgEntryController@search')->name('fg-entry-search');
+Route::get('get-job-work-order-detail','App\Http\Controllers\FgEntryController@workOrders')->name('get-job-work-order-detail');
+Route::get('get-work-order-name','App\Http\Controllers\FgEntryController@workOrdersName')->name('get-work-order-name');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // clear-cache
 Route::get('/clear-cache', function() {
@@ -203,7 +338,7 @@ echo 'Query Run succefully';
 Route::get('/first/{id}', function ($id) {
     echo $id;
     return view('first');
-})->middleware('customeMiddleware');
+});
 
 
 
@@ -212,51 +347,51 @@ Route::get('/first/{id}', function ($id) {
 
 
 
-Route::get('user_home','App\Http\Controllers\User@index')->middleware('customeMiddleware');
-Route::get('user_home/{id}','App\Http\Controllers\User@index')->middleware('customeMiddleware');
+Route::get('user_home','App\Http\Controllers\User@index');
+Route::get('user_home/{id}','App\Http\Controllers\User@index');
 
-Route::get('home','App\Http\Controllers\User@index')->middleware('customeMiddleware');
-Route::get('about','App\Http\Controllers\User@about')->middleware('customeMiddleware');
-Route::get('service','App\Http\Controllers\User@service')->middleware('customeMiddleware');
-
-
+Route::get('home','App\Http\Controllers\User@index');
+Route::get('about','App\Http\Controllers\User@about');
+Route::get('service','App\Http\Controllers\User@service');
 
 
-Route::view('page','page')->middleware('customeMiddleware');
-Route::view('page2','page2')->middleware('customeMiddleware');
-Route::view('myfrm','myfrm')->middleware('customeMiddleware');
 
-Route::post('submitfrm','App\Http\Controllers\Myfrm@index')->middleware('customeMiddleware');
 
-Route::view('news1','news1')->middleware('customeMiddleware');
-Route::view('news2','news2')->middleware('customeMiddleware');
+Route::view('page','page');
+Route::view('page2','page2');
+Route::view('myfrm','myfrm');
+
+Route::post('submitfrm','App\Http\Controllers\Myfrm@index');
+
+Route::view('news1','news1');
+Route::view('news2','news2');
 
 
 
 
 Route::get('dashboard', function () {
     return view('dashboard');
-})->middleware('customeMiddleware');
+});
 
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('viewquotation', function ($id) {
     
     return view('dashboard');
 });
-});
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
+
 
 Route::get('viewquotation/{id}', function ($quotation_id) {
 
     return view('viewquotation',array('quotation_id'=>$quotation_id));
 });
 
-});
+
 
 
 Route::get('login/{id}', function ($id) {
@@ -267,23 +402,23 @@ Route::get('login/{id}', function ($id) {
     {
         return view('/',array('id'=>$id));
     }
-})->middleware('customeMiddleware');
+});
 
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
 
-Route::get('login', function () {
+
+// Route::get('login', function () {
    
-    if (Session::has('userdata')){
-        return redirect('/dashboard');
-    }
-    else
-    {
-        return view('/');
-    }
-});
-});
+//     if (Session::has('userdata')){
+//         return redirect('/dashboard');
+//     }
+//     else
+//     {
+//         return view('/');
+//     }
+// });
+
 
 Route::get('/', function () {
     if (Session::has('userdata')){
@@ -295,13 +430,7 @@ Route::get('/', function () {
     }
 });
 
-
-Route::middleware(['customeMiddleware'])->group(function () {
-
- Route::post('checklogin','App\Http\Controllers\login@checklogin');
-});
-
-
+Route::post('checklogin','App\Http\Controllers\login@checklogin');
 
 Route::get('logout', 'App\Http\Controllers\login@logout');
 
@@ -310,7 +439,7 @@ Route::get('test', function () {
 });
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('master/{id}','App\Http\Controllers\master@index');
 Route::get('activemaster/{tbl}/{id}','App\Http\Controllers\master@activemaster');
@@ -322,7 +451,7 @@ Route::post('editmaster','App\Http\Controllers\master@editmaster');
 Route::post('validatemaster','App\Http\Controllers\master@validatemaster');
 Route::post('deletemaster','App\Http\Controllers\master@delete');
 Route::post('data/{id}','App\Http\Controllers\master@data');
-});
+
 
 
 
@@ -330,7 +459,7 @@ Route::post('data/{id}','App\Http\Controllers\master@data');
 
 
 //state module
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 
 Route::get('state','App\Http\Controllers\state@index');
@@ -341,17 +470,17 @@ Route::post('record_actions_state','App\Http\Controllers\state@record_actions');
 Route::post('deletestate','App\Http\Controllers\state@delete');
 Route::get('statedata','App\Http\Controllers\state@statedata');
 Route::get('fetchstatecountrydata','App\Http\Controllers\state@fetchstatecountrydata');
-});
 
 
-Route::middleware(['web','customeMiddleware'])->group(function () {
+
+
 
 Route::post('submitstate','App\Http\Controllers\state@submitstate');
-});
+
 //city module
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('city','App\Http\Controllers\city@index');
 Route::post('submitcity','App\Http\Controllers\city@submitcity');
@@ -363,56 +492,41 @@ Route::get('citydata','App\Http\Controllers\city@citydata');
 Route::get('city_ajax_populate_state','App\Http\Controllers\city@city_ajax_populate_state');
 Route::get('city_ajax_populate_country','App\Http\Controllers\city@city_ajax_populate_country');
 
-});
+
 
 //user module
 
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
-Route::get('user','App\Http\Controllers\user@index')->middleware('can:users-list');
-Route::post('userdata','App\Http\Controllers\user@userdata');
-Route::post('deleteuser','App\Http\Controllers\user@delete');
-Route::post('record_actions_user','App\Http\Controllers\user@record_actions');
 
 
-Route::get('/useraddedit/{id}', function ($id) {
-    if($id!="0")
-    {
-        $tbl_user = DB::select("select * from users where id='".$id."'");
-        return view('user.useraddedit',array('id'=>$id,'tbl_user'=>$tbl_user));
-    }
-    else
-    {
-        return view('user.useraddedit',array('id'=>$id,'tbl_user'=>""));
-    }
-});
-});
+// Route::get('user','App\Http\Controllers\user@index')->middleware('can:show-user');
+// Route::post('userdata','App\Http\Controllers\user@userdata');
+// Route::post('deleteuser','App\Http\Controllers\user@delete');
+// Route::post('record_actions_user','App\Http\Controllers\user@record_actions');
 
 
+// Route::get('/useraddedit/{id}', function ($id) {
+//     if($id!="0")
+//     {
+//         $tbl_user = DB::select("select * from users where id='".$id."'");
+//         return view('user.useraddedit',array('id'=>$id,'tbl_user'=>$tbl_user));
+//     }
+//     else
+//     {
+//         return view('user.useraddedit',array('id'=>$id,'tbl_user'=>""));
+//     }
+// })->middleware('can:user-add');
 
 
-
-
-
-
+// Route::post('validateusername','App\Http\Controllers\user@validateusername');
+// Route::post('validateusercode','App\Http\Controllers\user@validateusercode');
+// Route::post('submituser','App\Http\Controllers\user@submituser');
 
 
 
 
 
-
-
-Route::middleware(['customeMiddleware'])->group(function () {
-
-Route::post('validateusername','App\Http\Controllers\user@validateusername');
-Route::post('validateusercode','App\Http\Controllers\user@validateusercode');
-Route::post('submituser','App\Http\Controllers\user@submituser');
-
-});
-
-
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('role','App\Http\Controllers\role@index');
 Route::get('roledata','App\Http\Controllers\role@roledata');
@@ -436,11 +550,11 @@ Route::any('submitrole','App\Http\Controllers\role@submitrole');
 Route::post('deleterole','App\Http\Controllers\role@delete');
 Route::post('record_actions_role','App\Http\Controllers\role@record_actions');
 Route::get('moduledata','App\Http\Controllers\role@moduledata');
-});
+
 
 
 //quotation module
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('quotation','App\Http\Controllers\quotation@index');
 Route::get('quotationdata','App\Http\Controllers\quotation@quotationdata');
@@ -477,18 +591,18 @@ Route::post('deletetbldata','App\Http\Controllers\quotation@deletetbldata');
 Route::post('record_actions_quotation','App\Http\Controllers\quotation@record_actions');
 
 //Route::get('moduledata','App\Http\Controllers\quotation@moduledata');
-});
+
 //pdf route
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('htmlpdf','App\Http\Controllers\PDFController@htmlPDF');
 Route::get('generatePDF/{id}','App\Http\Controllers\PDFController@generatePDF');
 Route::get('generatePDFwithhf/{id}','App\Http\Controllers\PDFController@generatePDFwithhf');
 
-});
+
 //product_category module
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('productcategory','App\Http\Controllers\productcategory@index');
 Route::post('submitproductcategory','App\Http\Controllers\productcategory@submitproductcategory');
@@ -498,11 +612,11 @@ Route::post('deleteproductcategory','App\Http\Controllers\productcategory@delete
 Route::post('record_actions_productcategory','App\Http\Controllers\productcategory@record_actions');
 Route::get('productcategorydata','App\Http\Controllers\productcategory@productcategorydata');
 Route::post('get_excise_code_description','App\Http\Controllers\productcategory@get_excise_code_description');
-});
+
 //excise module
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('excise','App\Http\Controllers\excise@index');
 Route::get('excisedata','App\Http\Controllers\excise@excisedata');
@@ -511,9 +625,9 @@ Route::post('validateexcisecode','App\Http\Controllers\excise@validateexcisecode
 Route::post('editexcise','App\Http\Controllers\excise@editexcise');
 Route::post('deleteexcise','App\Http\Controllers\excise@delete');
 Route::post('record_actions_excise','App\Http\Controllers\excise@record_actions');
-});
+
 //process master module
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('process','App\Http\Controllers\process@index');
 Route::get('processdata','App\Http\Controllers\process@processdata');
@@ -536,12 +650,12 @@ Route::post('validateprocessname','App\Http\Controllers\process@validateprocessn
 //Route::post('validateusercode','App\Http\Controllers\user@validateusercode');
 Route::post('submitprocess','App\Http\Controllers\process@submitprocess');
 
-});
+
 
 
 //machine master module
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('machine','App\Http\Controllers\machine@index');
 Route::get('machinedata','App\Http\Controllers\machine@machinedata');
@@ -568,11 +682,11 @@ Route::post('validateuniqueid','App\Http\Controllers\machine@validateuniqueid');
 //Route::post('validateusercode','App\Http\Controllers\user@validateusercode');
 Route::post('submitmachine','App\Http\Controllers\machine@submitmachine');
 
-});
+
 
 //company master module
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('company','App\Http\Controllers\company@index');
 Route::get('companydata','App\Http\Controllers\company@companydata');
@@ -609,11 +723,11 @@ Route::post('deleteneft','App\Http\Controllers\company@deleteneft');
 
 Route::post('editneft','App\Http\Controllers\company@editneft');
 
-});
+
 
 //material module
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('material','App\Http\Controllers\material@index');
 Route::get('materialdata','App\Http\Controllers\material@materialdata');
@@ -638,10 +752,10 @@ Route::post('submitmaterial','App\Http\Controllers\material@submitmaterial');
 Route::post('deletematerial','App\Http\Controllers\material@delete');
 Route::post('record_actions_material','App\Http\Controllers\material@record_actions');
 Route::get('ajax_populate_rm_product_category','App\Http\Controllers\material@ajax_populate_rm_product_category');
-});
+
 
 // Unit module
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('unit','App\Http\Controllers\UnitMaster@index');
 Route::get('unitdata','App\Http\Controllers\UnitMaster@unitdata');
@@ -651,10 +765,10 @@ Route::post('editunit','App\Http\Controllers\UnitMaster@editunit');
 Route::post('deleteunit','App\Http\Controllers\UnitMaster@delete');
 Route::post('record_actions_unit','App\Http\Controllers\UnitMaster@record_actions');
 
-});
+
 // Raw Material Category
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('rmcategory','App\Http\Controllers\RMCategory@index');
 Route::get('rmcategorydata','App\Http\Controllers\RMCategory@rmcategorydata');
@@ -664,10 +778,10 @@ Route::post('editrmcategory','App\Http\Controllers\RMCategory@editrmcategory');
 Route::post('deletermcategory','App\Http\Controllers\RMCategory@delete');
 Route::post('record_actions_rm_category','App\Http\Controllers\RMCategory@record_actions');
 
-});
+
 // Raw Material Product Category
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('rmproductcategory','App\Http\Controllers\RMProductCategory@index');
 Route::get('rmproductcategorydata','App\Http\Controllers\RMProductCategory@rmproductcategorydata');
@@ -677,11 +791,11 @@ Route::post('editrmproductcategory','App\Http\Controllers\RMProductCategory@edit
 Route::post('validatermproductcategory','App\Http\Controllers\RMProductCategory@validatermproductcategory');
 Route::post('record_actions_rmproductcategory','App\Http\Controllers\RMProductCategory@record_actions');
 
-});
+
 
 //Product master module
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('product','App\Http\Controllers\product@index');
 Route::get('productdata','App\Http\Controllers\product@productdata');
@@ -714,11 +828,11 @@ Route::get('/productaddedit/{id}', function ($id) {
 Route::post('validateproductid','App\Http\Controllers\product@validateproductid');
 //Route::post('validateusercode','App\Http\Controllers\user@validateusercode');
 Route::post('submitproduct','App\Http\Controllers\product@submitproduct');
-});
+
 // QC Master
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('qcmaster','App\Http\Controllers\QcMaster@index');
 Route::get('qcmasterdata','App\Http\Controllers\QcMaster@qcmasterdata');
@@ -728,11 +842,10 @@ Route::post('record_actions_qcmaster','App\Http\Controllers\QcMaster@record_acti
 Route::post('validateqcmaster','App\Http\Controllers\QcMaster@validateqcmaster');
 Route::post('editqcmaster','App\Http\Controllers\QcMaster@editqcmaster');
 
-});
 
 //job card module
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('jobcard','App\Http\Controllers\jobcard@index');
 Route::get('jobcarddata','App\Http\Controllers\jobcard@jobcarddata');
@@ -763,9 +876,9 @@ Route::get('/jobcardaddedit/{id}/{tab}', function ($id,$tab="general") {
 });
 
 
-});
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
+
 
 Route::post('subitjombcard','App\Http\Controllers\jobcard@submitjobcard');
 
@@ -798,9 +911,9 @@ Route::get('generatejobcardPDFwithhf/{id}','App\Http\Controllers\PDFController@g
 
 Route::get('thermalgeneratejobcardPDF/{id}','App\Http\Controllers\PDFController@thermalgeneratejobcardPDF');
 Route::get('thermalgeneratejobcardPDFwithhf/{id}','App\Http\Controllers\PDFController@thermalgeneratejobcardPDFwithhf');
-});
+
 //spare module
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('spare','App\Http\Controllers\spare@index');   // get
 Route::get('sparedata','App\Http\Controllers\spare@sparedata');  // get
@@ -815,11 +928,10 @@ Route::any('ajax_populate_product_type','App\Http\Controllers\jobcard@ajax_popul
 Route::any('deleteimage','App\Http\Controllers\jobcard@deleteimage');// post
 Route::any('downloadimage','App\Http\Controllers\jobcard@downloadimage');// post
 
-});
 
 //thermal job card
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('thermal_jobcard','App\Http\Controllers\thermaljobcard@index');
 Route::get('thermal_jobcarddata','App\Http\Controllers\thermaljobcard@jobcarddata');
@@ -882,12 +994,12 @@ Route::get('thermal_generatejobcardPDFwithhf/{id}','App\Http\Controllers\PDFCont
 Route::post('thermal_deleteimage','App\Http\Controllers\jobcard@deleteimage');
 Route::post('thermal_downloadimage','App\Http\Controllers\jobcard@downloadimage');
 
-});
+
 
 
 
 //computer stationary job card
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('/computer_stationary_jobcardaddedit/{id}/{tab}', function ($id,$tab="general") {
     if($id!="0")
@@ -915,11 +1027,11 @@ Route::get('csgeneratejobcardPDF/{id}','App\Http\Controllers\PDFController@csgen
 Route::get('csgeneratejobcardPDFwithhf/{id}','App\Http\Controllers\PDFController@csgeneratejobcardPDFwithhf');
 
 
-});
+
 //computer stationary job card finished
 
 //check job card
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('/checkjobcardaddedit/{id}/{tab}', function ($id,$tab="general") {
     if($id!="0")
@@ -946,21 +1058,19 @@ Route::post('submitspecificdetailscheck','App\Http\Controllers\checkjobcard@subm
 Route::get('chequegeneratejobcardPDF/{id}','App\Http\Controllers\PDFController@chequegeneratejobcardPDF');
 Route::get('chequegeneratejobcardPDFwithhf/{id}','App\Http\Controllers\PDFController@chequegeneratejobcardPDFwithhf');
 
-});
+
 
 //check job card finished
-Route::middleware(['customeMiddleware'])->group(function () {
 
 
 Route::get('sendbasicemail','App\Http\Controllers\MailController@basic_email');
 Route::get('sendhtmlemail','App\Http\Controllers\MailController@html_email');
 Route::get('sendattachmentemail','App\Http\Controllers\MailController@attachment_email');
 
-});
 
 //sales work order
 
-Route::middleware(['customeMiddleware'])->group(function () {
+
 
 Route::get('salesworkorder','App\Http\Controllers\salesworkorder@index');
 Route::post('salesworkorderataformdata','App\Http\Controllers\salesworkorder@salesworkorderataformdata');
@@ -1001,14 +1111,13 @@ Route::post('editlabelingdetails','App\Http\Controllers\company@editlabelingdeta
 
 
 
-});
+
 
 
 
 // customer
 
 
-Route::middleware(['customeMiddleware'])->group(function () {
 Route::get('customer','App\Http\Controllers\customer@index');
 Route::get('customerdata','App\Http\Controllers\customer@customerdata');
 Route::post('deletecustomer','App\Http\Controllers\customer@delete');
@@ -1061,7 +1170,6 @@ Route::get('/export/{type}/{id}', 'App\Http\Controllers\customer@export');
 
 Route::get('deliverylocationPDF/{id}','App\Http\Controllers\PDFController@deliverylocationPDF');
 
-});
 
 
 //tax master module
@@ -1093,7 +1201,6 @@ Route::post('submittax','App\Http\Controllers\tax@submittax');
 });
 //transport master module
 
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('transport','App\Http\Controllers\transport@index');
 Route::get('transportdata','App\Http\Controllers\transport@transportdata');
@@ -1194,10 +1301,8 @@ Route::post('product-size-master-store','App\Http\Controllers\ProductSizeMasterC
 Route::get('product-size-master-edit','App\Http\Controllers\ProductSizeMasterController@edit')->name('product-size-master-edit');
 Route::post('product-size-master-update','App\Http\Controllers\ProductSizeMasterController@update')->name('product-size-master-update');
 Route::get('product-size-master-destroy','App\Http\Controllers\ProductSizeMasterController@destroy')->name('product-size-master-destroy');
-});
 //Tax Structure
 
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('tax-structure-master','App\Http\Controllers\TaxStructureMasterController@index')->name('tax-structure-master');
 Route::get('tax-structure-master-create','App\Http\Controllers\TaxStructureMasterController@create')->name('tax-structure-master-create');
@@ -1206,9 +1311,7 @@ Route::get('tax-structure-master-edit','App\Http\Controllers\TaxStructureMasterC
 Route::post('tax-structure-master-update','App\Http\Controllers\TaxStructureMasterController@update')->name('tax-structure-master-update');
 Route::get('tax-structure-master-destroy','App\Http\Controllers\TaxStructureMasterController@destroy')->name('tax-structure-master-destroy');
 Route::get('tax-structure-master-status','App\Http\Controllers\TaxStructureMasterController@status')->name('tax-structure-master-status');
-});
 //Proforma Invoice
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('proforma-invoice','App\Http\Controllers\ProformaInvoiceController@index')->name('proforma-invoice');
 Route::get('proforma-invoice-create','App\Http\Controllers\ProformaInvoiceController@create')->name('proforma-invoice-create');
@@ -1223,9 +1326,7 @@ Route::get('get-product-category-items','App\Http\Controllers\ProformaInvoiceCon
 Route::get('get-product-category-hsn','App\Http\Controllers\ProformaInvoiceController@categoryHSN')->name('get-product-category-hsn');
 Route::get('get-tax-value','App\Http\Controllers\ProformaInvoiceController@getTaxName')->name('get-tax-value');
 Route::get('get-product-category-size','App\Http\Controllers\ProformaInvoiceController@categoryProductSize')->name('get-product-category-size');
-});
 //Job Card Route
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('job-card-type','App\Http\Controllers\JobCardTypeController@index')->name('job-card-type');
 Route::get('job-card-type-create','App\Http\Controllers\JobCardTypeController@create')->name('job-card-type-create');
@@ -1235,67 +1336,13 @@ Route::post('job-card-type-update','App\Http\Controllers\JobCardTypeController@u
 Route::get('job-card-type-destroy','App\Http\Controllers\JobCardTypeController@destroy')->name('job-card-type-destroy');
 Route::get('job-card-create','App\Http\Controllers\JobCardController@create')->name('job-card-create');
 
-});
 
 
 
-
-
-
-
-
-
-
-//FG Entry
-
-Route::middleware(['customeMiddleware'])->group(function () {
-
-Route::get('fg-entry','App\Http\Controllers\FgEntryController@index')->name('fg-entry');
-Route::get('fg-entry-create','App\Http\Controllers\FgEntryController@create')->name('fg-entry-create');
-Route::post('fg-entry-store','App\Http\Controllers\FgEntryController@store')->name('fg-entry-store');
-Route::get('fg-entry-edit','App\Http\Controllers\FgEntryController@edit')->name('fg-entry-edit');
-Route::post('fg-entry-update','App\Http\Controllers\FgEntryController@update')->name('fg-entry-update');
-Route::get('fg-entry-destroy','App\Http\Controllers\FgEntryController@destroy')->name('fg-entry-destroy');
-Route::get('fg-entry-show','App\Http\Controllers\FgEntryController@show')->name('fg-entry-show');
-Route::get('fg-entry-search','App\Http\Controllers\FgEntryController@search')->name('fg-entry-search');
-Route::get('get-job-work-order-detail','App\Http\Controllers\FgEntryController@workOrders')->name('get-job-work-order-detail');
-Route::get('get-work-order-name','App\Http\Controllers\FgEntryController@workOrdersName')->name('get-work-order-name');
-});
 //Challan
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('challan','App\Http\Controllers\ChallanController@index')->name('challan');
 Route::get('challan-create','App\Http\Controllers\ChallanController@create')->name('challan-create');
@@ -1303,8 +1350,6 @@ Route::post('challan-store','App\Http\Controllers\ChallanController@store')->nam
 Route::get('challan-edit','App\Http\Controllers\ChallanController@edit')->name('challan-edit');
 Route::post('challan-update','App\Http\Controllers\ChallanController@update')->name('challan-update');
 Route::get('challan-destroy','App\Http\Controllers\ChallanController@destroy')->name('challan-destroy');
-});
-
 
 
 
@@ -1313,7 +1358,6 @@ Route::get('challan-destroy','App\Http\Controllers\ChallanController@destroy')->
 
 //User Operator
 
-Route::middleware(['customeMiddleware'])->group(function () {
 Route::get('user-operator','App\Http\Controllers\UserOperatorController@index')->name('user-operator');
 Route::get('user-operator-create','App\Http\Controllers\UserOperatorController@create')->name('user-operator-create');
 Route::post('user-operator-store','App\Http\Controllers\UserOperatorController@store')->name('user-operator-store');
@@ -1322,20 +1366,16 @@ Route::post('user-operator-update','App\Http\Controllers\UserOperatorController@
 Route::get('user-operator-destroy','App\Http\Controllers\UserOperatorController@destroy')->name('user-operator-destroy');
 Route::get('user-operator-status','App\Http\Controllers\UserOperatorController@status')->name('user-operator-status');
 Route::get('user-operator-search','App\Http\Controllers\UserOperatorController@search')->name('user-operator-search');
-});
 //Invoice Master
 
-Route::middleware(['customeMiddleware'])->group(function () {
 Route::get('invoice-master','App\Http\Controllers\InvoiceMasterController@index')->name('invoice-master');
 Route::get('invoice-master-create','App\Http\Controllers\InvoiceMasterController@create')->name('invoice-master-create');
 Route::post('invoice-master-store','App\Http\Controllers\InvoiceMasterController@store')->name('invoice-master-store');
 Route::get('invoice-master-edit','App\Http\Controllers\InvoiceMasterController@edit')->name('invoice-master-edit');
 Route::post('invoice-master-update','App\Http\Controllers\InvoiceMasterController@update')->name('invoice-master-update');
 Route::get('invoice-master-destroy','App\Http\Controllers\InvoiceMasterController@destroy')->name('invoice-master-destroy');
-});
 //Process Category
 
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('process-category','App\Http\Controllers\ProcessCategoryController@index')->name('process-category');
 Route::get('process-category-create','App\Http\Controllers\ProcessCategoryController@create')->name('process-category-create');
@@ -1343,10 +1383,8 @@ Route::post('process-category-store','App\Http\Controllers\ProcessCategoryContro
 Route::get('process-category-edit','App\Http\Controllers\ProcessCategoryController@edit')->name('process-category-edit');
 Route::post('process-category-update','App\Http\Controllers\ProcessCategoryController@update')->name('process-category-update');
 Route::get('process-category-destroy','App\Http\Controllers\ProcessCategoryController@destroy')->name('process-category-destroy');
-});
 //Product-Description
 
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('product-description','App\Http\Controllers\ProductDescriptionController@index')->name('product-description');
 Route::get('product-sub-description','App\Http\Controllers\ProductDescriptionController@indexSub')->name('product-sub-description');
@@ -1367,9 +1405,7 @@ Route::post('product-description-update-menu','App\Http\Controllers\ProductDescr
 Route::get('product-description-destroy','App\Http\Controllers\ProductDescriptionController@destroy')->name('product-description-destroy');
 Route::get('product-description-destroySub','App\Http\Controllers\ProductDescriptionController@destroySub')->name('product-description-destroySub');
 Route::get('product-description-destroyMenu','App\Http\Controllers\ProductDescriptionController@destroyMenu')->name('product-description-destroyMenu');
-});
 //Advance Printing Feature
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('advance-feature','App\Http\Controllers\AdvanceFeatureMasterController@index')->name('advance-feature');
 Route::get('advance-feature-create','App\Http\Controllers\AdvanceFeatureMasterController@create')->name('advance-feature-create');
@@ -1377,18 +1413,14 @@ Route::post('advance-feature-store','App\Http\Controllers\AdvanceFeatureMasterCo
 Route::get('advance-feature-edit','App\Http\Controllers\AdvanceFeatureMasterController@edit')->name('advance-feature-edit');
 Route::post('advance-feature-update','App\Http\Controllers\AdvanceFeatureMasterController@update')->name('advance-feature-update');
 Route::get('advance-feature-destroy','App\Http\Controllers\AdvanceFeatureMasterController@destroy')->name('advance-feature-destroy');
-});
 //Prnter Feature
-Route::middleware(['customeMiddleware'])->group(function () {
 Route::get('printer-feature','App\Http\Controllers\ProcessCategoryController@index')->name('printer-feature');
 Route::get('printer-feature-create','App\Http\Controllers\ProcessCategoryController@create')->name('printer-feature-create');
 Route::post('printer-feature-store','App\Http\Controllers\ProcessCategoryController@store')->name('printer-feature-store');
 Route::get('printer-feature-edit','App\Http\Controllers\ProcessCategoryController@edit')->name('printer-feature-edit');
 Route::post('printer-feature-update','App\Http\Controllers\ProcessCategoryController@update')->name('printer-feature-update');
 Route::get('printer-feature-destroy','App\Http\Controllers\ProcessCategoryController@destroy')->name('printer-feature-destroy');
-});
 //Prnter Feature
-Route::middleware(['customeMiddleware'])->group(function () {
 Route::get('printer','App\Http\Controllers\ProcessCategoryController@index')->name('printer');
 Route::get('printer-create','App\Http\Controllers\ProcessCategoryController@create')->name('printer-create');
 Route::post('printer-store','App\Http\Controllers\ProcessCategoryController@store')->name('printer-store');
@@ -1397,25 +1429,9 @@ Route::post('printer-update','App\Http\Controllers\ProcessCategoryController@upd
 Route::get('printer-destroy','App\Http\Controllers\ProcessCategoryController@destroy')->name('printer-destroy');
 
 Route::get('get-advance-feature','App\Http\Controllers\AdvanceFeatureMasterController@getAdvanceFeature')->name('get-advance-feature');
-});
-//Sales-Contract
-Route::middleware(['customeMiddleware'])->group(function () {
-Route::get('sales-contract','App\Http\Controllers\SalesContractController@index')->name('sales-contract');
-Route::get('sales-contract-create','App\Http\Controllers\SalesContractController@create')->name('sales-contract-create');
-Route::post('sales-contract-store','App\Http\Controllers\SalesContractController@store')->name('sales-contract-store');
-Route::get('sales-contract-edit','App\Http\Controllers\SalesContractController@edit')->name('sales-contract-edit');
-Route::post('sales-contract-update','App\Http\Controllers\SalesContractController@update')->name('sales-contract-update');
-Route::get('sales-contract-destroy','App\Http\Controllers\SalesContractController@destroy')->name('sales-contract-destroy');
-Route::get('sales-contract-show','App\Http\Controllers\SalesContractController@show')->name('sales-contract-show');
-Route::get('get-product-hsn','App\Http\Controllers\SalesContractController@productHSN')->name('get-product-hsn');
-Route::get('get-quotation-detail-SC','App\Http\Controllers\SalesContractController@quotationDetail')->name('get-quotation-detail-SC');
-Route::get('sales-contract-export','App\Http\Controllers\SalesContractController@export')->name('sales-contract-export');
 
-Route::get('job-card-duplicate/{id}','App\Http\Controllers\jobcard@duplicate')->name('job-card-duplicate');
-});
 
 //Permission Menu
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('menu','App\Http\Controllers\PermissionMenuMasterController@index')->name('menu');
 Route::get('menu-create','App\Http\Controllers\PermissionMenuMasterController@create')->name('menu-create');
@@ -1426,10 +1442,8 @@ Route::get('menu-destroy','App\Http\Controllers\PermissionMenuMasterController@d
 Route::get('menu-show','App\Http\Controllers\PermissionMenuMasterController@show')->name('menu-show');
 Route::post('add-menu-under-parent','App\Http\Controllers\PermissionMenuMasterController@showStore')->name('add-menu-under-parent');
 Route::get('get-parent-menu','App\Http\Controllers\PermissionMenuMasterController@parentWiseMenu')->name('get-parent-menu');
-});
 //Permission
 
-Route::middleware(['customeMiddleware'])->group(function () {
 Route::get('permission','App\Http\Controllers\PermissionMenuMappingController@index')->name('permission');
 Route::get('permission-create','App\Http\Controllers\PermissionMenuMappingController@create')->name('permission-create');
 Route::post('permission-store','App\Http\Controllers\PermissionMenuMappingController@store')->name('permission-store');
@@ -1437,9 +1451,7 @@ Route::get('permission-edit','App\Http\Controllers\PermissionMenuMappingControll
 Route::post('permission-update','App\Http\Controllers\PermissionMenuMappingController@update')->name('permission-update');
 Route::get('permission-destroy','App\Http\Controllers\PermissionMenuMappingController@destroy')->name('permission-destroy');
 Route::get('permission-show','App\Http\Controllers\PermissionMenuMappingController@show')->name('permission-show');
-});
 //MappingRolePermisssion
-Route::middleware(['customeMiddleware'])->group(function () {
 
 Route::get('/mappingrolepermisssion/{id}', 'App\Http\Controllers\PermissionRoleMappingController@store');
 Route::post('update-permission','App\Http\Controllers\PermissionRoleMappingController@update_permission')->name('update-permission');
@@ -1460,9 +1472,7 @@ Route::get('/permission-insert', function(){
     echo 'Records inserted successfully';
 
 });
-});
 
-Auth::routes();
 
 
 

@@ -1,16 +1,6 @@
 @extends('layout.app')
 @section('content')
-@php
-    // $result = \Helper::getPermission();
-    $create = \Helper::getPermission('sc-create') ? 1 : 0;
-    $edit = \Helper::getPermission('sc-edit') ? 1 : 0;
-    $delete = \Helper::getPermission('sc-delete') ? 1 : 0;
-    // $duplicate = \Helper::getPermission('sc-duplicate') ? 1 : 0;
-    // $alter = \Helper::getPermission('sc-alter') ? 1 : 0;
-    $view = \Helper::getPermission('sc-view') ? 1 : 0;
-    // $pdf = \Helper::getPermission('sc-pdf') ? 1 : 0;
-    $export = \Helper::getPermission('sc-export') ? 1 : 0;
-@endphp
+@can('salesContract-show')
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <!--begin::Toolbar-->
     <div class="toolbar" id="kt_toolbar">
@@ -53,17 +43,17 @@
             <!--end::Page title-->
             <!--begin::Actions-->
             <div class="d-flex align-items-center gap-2 gap-lg-3">
-                @if ($export)
+                
                     <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                         <a href="{{route('sales-contract-export') }}" class="btn btn-sm btn-primary">Export Sales Contract</a>
                     </div>
-                @endif
+             
 
-                @if ($create)
+            
                     <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                         <a href="{{route('sales-contract-create') }}" class="btn btn-sm btn-primary">Add Sales Contract</a>
                     </div>
-                @endif
+             
             </div>
             <!--end::Actions-->
         </div>
@@ -105,9 +95,9 @@
                                 <th >COMPANY NAME</th>
                                 <th >SALES PERSONS NAME</th>
                                 <th >DATE</th>
-                                @if ($edit != 0 || $delete != 0 || $view != 0)
+                      
                                     <th >Actions</th>
-                                @endif
+                                
                             </tr>
                             <!--end::Table row-->
                         </thead>
@@ -122,15 +112,13 @@
                                     <td>{{ $salesContract->getSalesPerson->fullname ?? '' }}</td>
                                     <td> {{ date('d-m-Y',strtotime($salesContract->date)) ?? '' }}</td>
                                     <td>
-                                        @if ($view == 1)
+                                   
                                             <a href="{{route('sales-contract-show',['id' => $salesContract->id])}}" title="Preview" class="menu-link flex-stack px-3" style="font-weight:normal !important;" target="_blank"><i class="fa fa-eye" aria-hidden="true" style="color:#009ef7"></i></a>
-                                        @endif
-                                        @if ($edit == 1)
+                                    
                                             <a href="{{route('sales-contract-edit',['id' => $salesContract->id])}}" title="Edit" class="menu-link flex-stack px-3" style="font-weight:normal !important;"><i class="fa fa-edit" style="font-weight:normal !important;"></i></a>
-                                        @endif
-                                        @if ($delete == 1)
+                                     
                                             <a data-id="{{$salesContract->id}}" title="Delete" style="cursor: pointer;font-weight:normal !important;" class="menu-link flex-stack px-3 delete"><i class="fa fa-trash" style="color:red;"> </i></a>
-                                        @endif
+                                     
                                     </td>
                                 </tr>
                             @endforeach
@@ -145,7 +133,7 @@
         </div>
         <!--end::Container-->
     </div>
-    <!--end::Post-->
+   @endcan
 </div>
 
 @endsection

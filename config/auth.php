@@ -22,11 +22,7 @@ return [
         'role' => Spatie\Permission\Models\Role::class,
         'permission' => Spatie\Permission\Models\Permission::class,
     ],
-    'table_names' => [
-        'roles' => 'access_roles',
-        'permissions' => 'permission_menu_mappings',
-        'role_has_permissions' => 'permission_role_mappings',
-    ],
+    
     
     /*
     |--------------------------------------------------------------------------
